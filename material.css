@@ -754,6 +754,57 @@ dialog h2 {
   font-weight: 400;
   color: inherit;
 }
+.planning-mode {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 12px;
+}
+[hidden] {
+  display: none !important;
+}
+#supply-planner,
+#farm-options {
+  margin-bottom: 16px;
+}
+#crop-options {
+  margin-bottom: 20px;
+}
+#crop-options button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#crop-options small {
+  flex-basis: 100%;
+  text-align: left;
+}
+#crop-dialog {
+  width: min(560px, calc(100vw - 32px));
+}
+#crop-dialog .controls {
+  margin-bottom: 20px;
+}
+.supply-limit {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.supply-limit > span {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 140px;
+}
+.supply-limit small {
+  flex-basis: 100%;
+}
+.supply-limit input {
+  width: 110px;
+}
 .select-trigger {
   font-size: 14px;
   text-align: left;

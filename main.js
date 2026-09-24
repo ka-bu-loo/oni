@@ -1,8 +1,9 @@
 import { foods, asset, wiki, defaults, choices } from './catalog.js';
 import { calculate, normalizeSettings } from './calculator.js';
+import { plan } from './planning.js';
 import { availableAssets } from './asset-status.js';
 import { createTreeView } from './tree-view.js';
-import { mutations, pollinators, mutationDescription } from './modifiers.js';
+import { mutations, pollinators, mutationDescription, mutablePlants } from './modifiers.js';
 import { diets, dietLabel } from './diets.js';
 import { bonusGuide } from './bonus-guide.js';
 const $ = (id) => document.getElementById(id),
@@ -31,6 +32,14 @@ let settings = { ...defaults },
   selected = 'Frost Burger',
   result;
 let pack = 'all';
+const planning = { mode: 'colony', amount: 1000, limits: [] };
+const modeLabels = {
+  colony: 'Colony size',
+  mass: 'Food kg per cycle',
+  energy: 'Food kcal per cycle',
+  limited: 'Available supplies',
+};
+let editingCrop = null;
 const packImages = {
   'Spaced Out': 'Spaced Out Logo',
   Frosty: 'Frosty Planet Logo',
@@ -62,6 +71,8 @@ const controlKeys = [
   'pollinationEnabled',
   'mutationEnabled',
   'ovagroVines',
+  'farmerSkill',
+  'breakdownFertilizer',
 ];
 for (const key of controlKeys) {
   if (typeof defaults[key] === 'boolean') $(key).checked = settings[key];
@@ -131,7 +142,33 @@ function row(name, value, detail) {
 }
 function render() {
   settings = normalizeSettings(settings);
-  result = calculate(selected, settings);
+  result = plan(selected, settings, planning);
+  $('planning-mode').textContent = `${modeLabels[planning.mode]} ▾`;
+  $('target-control').hidden = !['mass', 'energy'].includes(planning.mode);
+  $('target-label').textContent = planning.mode === 'mass' ? 'kg per cycle' : 'kcal per cycle';
+  $('supply-planner').hidden = planning.mode !== 'limited';
+  $('normal').disabled = $('bottomless').disabled = planning.mode !== 'colony';
+  $('margin').disabled = ['mass', 'energy'].includes(planning.mode);
+  if (!document.activeElement?.matches('#supply-limits input'))
+    $('supply-limits').innerHTML = planning.limits
+      .map(
+        (limit, i) =>
+          `<div class="supply-limit"><span>${sprite(limit.name)}${esc(limit.name)}<small>${limit.group === 'farm' ? 'plants' : limit.group === 'ranch' ? 'adult breeders' : limit.perSecond ? 'kg/second' : esc(result.resourceUnits[limit.name] || 'per cycle')}</small></span><input aria-label="${esc(limit.name)} limit" data-limit="${i}" type="number" min="0" step="any" value="${limit.amount}" /><button type="button" data-remove-limit="${i}" aria-label="Remove ${esc(limit.name)} limit">×</button>${limit.group === 'resources' && result.resourceUnits[limit.name] === 'kg/cycle' ? `<button type="button" data-limit-unit="${i}">${limit.perSecond ? 'Use kg/cycle' : 'Use kg/s'}</button>` : ''}</div>`,
+      )
+      .join('');
+  $('capacity-result').textContent =
+    result.supportedDupes == null
+      ? settings.hunger === -1000
+        ? 'Tummyless dupes have no food-based capacity limit.'
+        : 'No finite capacity calculated: add a limit that this meal actually uses. For example, wild Waterweed does not use Salt Water.'
+      : `${Math.floor(result.supportedDupes + 1e-9)} normal dupes supported (${exact(result.supportedDupes)} calculated), including ${settings.margin}% surplus. Limiting: ${result.bottlenecks.join(', ')}.`;
+  $('crop-options').innerHTML =
+    Object.keys(result.farm)
+      .map(
+        (name) =>
+          `<button type="button" data-crop="${esc(name)}">${sprite(name)}${esc(name)}<small>${settings.crops[name] ? 'Customized' : 'Colony settings'}</small></button>`,
+      )
+      .join('') || '<p>No crops in this plan.</p>';
   $('pollinator').innerHTML =
     `${settings.pollinator === 'None' ? '' : sprite(settings.pollinator)}${esc(settings.pollinator)} ▾`;
   $('pollinator').disabled = !settings.pollinationEnabled;
@@ -165,7 +202,7 @@ function render() {
       Object.entries(result.ranch)
         .map(([n, v]) => row(n, Math.ceil(v - 1e-10), `${fmt(v)} adults minimum`))
         .join('') || '<p class="muted">No renewable capacity in this plan.</p>';
-  if (settings.lumbHarvest && result.lumbHarvests > 0)
+  if (result.lumbHarvests > 0)
     $('capacity').insertAdjacentHTML(
       'beforeend',
       row('Lumb', fmt(result.lumbHarvests / 10), 'wild harvest helpers · before travel headroom'),
@@ -173,7 +210,13 @@ function render() {
   $('resources').innerHTML =
     Object.entries(result.resources)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([n, v]) => row(n, fmt(v), result.resourceUnits[n]))
+      .map(([n, v]) =>
+        row(
+          n,
+          fmt(v),
+          `${result.resourceUnits[n]}${result.resourceUnits[n] === 'kg/cycle' ? ` · ${v >= 600 ? `${exact(v / 600)} kg/s` : `${exact((v * 1000) / 600)} g/s`}` : ''}`,
+        ),
+      )
       .join('') || '<p class="muted">No external resource input.</p>';
   $('stations').innerHTML =
     Object.entries(result.stations)
@@ -251,6 +294,123 @@ $('meal-close').onclick = () => {
   document.querySelector('.food-section > summary').focus();
 };
 const selectButtons = [];
+function pickText(title, options, value, choose) {
+  $('choice-title').textContent = title;
+  $('choice-options').innerHTML = options
+    .map(
+      (o, i) =>
+        `<button type="button" data-option="${i}" aria-pressed="${o.value === value}">${esc(o.label)}${o.description ? `<small class="mutation-description">${esc(o.description)}</small>` : ''}</button>`,
+    )
+    .join('');
+  $('choice-options').onclick = (e) => {
+    const button = e.target.closest('[data-option]');
+    if (!button) return;
+    choose(options[Number(button.dataset.option)].value);
+    $('choice-dialog').close();
+  };
+  $('choice-dialog').showModal();
+}
+$('planning-mode').onclick = () =>
+  pickText(
+    'Plan by',
+    Object.entries(modeLabels).map(([value, label]) => ({ value, label })),
+    planning.mode,
+    (mode) => {
+      planning.mode = mode;
+      render();
+    },
+  );
+$('target-amount').oninput = () => {
+  planning.amount = $('target-amount').value;
+  render();
+};
+$('add-limit').onclick = () => {
+  const basis = calculate(selected, settings, 1000);
+  const options = ['resources', 'farm', 'ranch'].flatMap((group) =>
+    Object.keys(basis[group]).map((name) => ({
+      value: `${group}:${name}`,
+      label: name,
+      description:
+        group === 'farm'
+          ? 'Existing plants'
+          : group === 'ranch'
+            ? 'Adult breeders kept alive'
+            : basis.resourceUnits[name],
+    })),
+  );
+  pickText('Limit production by', options, '', (value) => {
+    const [group, name] = value.split(':');
+    if (!planning.limits.some((l) => l.group === group && l.name === name))
+      planning.limits.push({
+        group,
+        name,
+        amount: Math.ceil(basis[group][name]),
+        perSecond: false,
+      });
+    render();
+  });
+};
+$('supply-limits').oninput = (e) => {
+  if (e.target.dataset.limit === undefined) return;
+  planning.limits[Number(e.target.dataset.limit)].amount = Math.max(0, Number(e.target.value) || 0);
+  render();
+};
+$('supply-limits').onclick = (e) => {
+  const remove = e.target.closest('[data-remove-limit]'),
+    unit = e.target.closest('[data-limit-unit]');
+  if (remove) planning.limits.splice(Number(remove.dataset.removeLimit), 1);
+  if (unit) {
+    const limit = planning.limits[Number(unit.dataset.limitUnit)];
+    limit.amount *= limit.perSecond ? 600 : 1 / 600;
+    limit.perSecond = !limit.perSecond;
+  }
+  if (remove || unit) render();
+};
+function updateCropDialog() {
+  const value = { ...settings, ...settings.crops[editingCrop] };
+  $('crop-title').textContent = editingCrop;
+  for (const key of ['wild', 'harvest', 'lumbHarvest', 'fertilizer'])
+    $('crop-' + key).checked = value[key];
+  $('crop-mutation').textContent = `${value.mutationEnabled ? value.mutation : 'None'} ▾`;
+  $('crop-mutation').disabled = !mutablePlants.has(editingCrop);
+  if (!mutablePlants.has(editingCrop)) $('crop-mutation').textContent = 'Not mutable';
+  $('crop-pollinator').innerHTML =
+    `${value.pollinationEnabled && value.pollinator !== 'None' ? sprite(value.pollinator) : ''}${esc(value.pollinationEnabled ? value.pollinator : 'None')} ▾`;
+}
+function setCrop(patch) {
+  settings.crops[editingCrop] = { ...settings.crops[editingCrop], ...patch };
+  render();
+  updateCropDialog();
+}
+$('crop-options').onclick = (e) => {
+  const button = e.target.closest('[data-crop]');
+  if (!button) return;
+  editingCrop = button.dataset.crop;
+  updateCropDialog();
+  $('crop-dialog').showModal();
+};
+for (const key of ['wild', 'harvest', 'lumbHarvest', 'fertilizer'])
+  $('crop-' + key).onchange = () => setCrop({ [key]: $('crop-' + key).checked });
+$('crop-mutation').onclick = () =>
+  pickText(
+    'Crop mutation',
+    Object.keys(mutations).map((value) => ({
+      value,
+      label: value,
+      description: mutationDescription(value),
+    })),
+    { ...settings, ...settings.crops[editingCrop] }.mutation,
+    (mutation) => setCrop({ mutation, mutationEnabled: true }),
+  );
+$('crop-pollinator').onclick = () =>
+  pick('Crop pollination', Object.keys(pollinators), (pollinator) =>
+    setCrop({ pollinator, pollinationEnabled: true }),
+  );
+$('crop-reset').onclick = () => {
+  delete settings.crops[editingCrop];
+  render();
+  updateCropDialog();
+};
 function syncSelectButtons() {
   for (const { select, button } of selectButtons) {
     button.textContent = `${select.selectedOptions[0]?.textContent || 'None'} ▾`;

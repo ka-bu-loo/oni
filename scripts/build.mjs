@@ -20,6 +20,7 @@ const files = [
   'main.js',
   'catalog.js',
   'calculator.js',
+  'planning.js',
   'foods.js',
   'asset-status.js',
   'asset-manifest.json',

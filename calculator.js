@@ -7,6 +7,36 @@ export function normalizeSettings(input = {}) {
   for (const k of ['normal', 'bottomless', 'margin'])
     s[k] = Math.min(100000, Math.max(0, Number(s[k]) || 0));
   s.margin = Math.min(100, s.margin);
+  s.farmerSkill = Math.min(100, Math.max(0, Number(s.farmerSkill) || 0));
+  s.breakdownFertilizer = s.breakdownFertilizer !== false;
+  const cropNames = new Set([
+    ...Object.values(plants).map((p) => p.name),
+    'Balm Lily',
+    'Thimble Reed',
+    'Gas Grass',
+    'Tublia',
+    'Starnacle',
+    'Bonbon Tree',
+  ]);
+  s.crops = Object.fromEntries(
+    Object.entries(input.crops || {})
+      .filter(([name]) => cropNames.has(name))
+      .map(([name, value]) => {
+        const crop = {};
+        for (const key of [
+          'wild',
+          'harvest',
+          'lumbHarvest',
+          'fertilizer',
+          'mutationEnabled',
+          'pollinationEnabled',
+        ])
+          if (typeof value?.[key] === 'boolean') crop[key] = value[key];
+        if (Object.hasOwn(mutations, value?.mutation)) crop.mutation = value.mutation;
+        if (Object.hasOwn(pollinators, value?.pollinator)) crop.pollinator = value.pollinator;
+        return [name, crop];
+      }),
+  );
   s.hunger = [-1000, -500, 0, 500, 1000].includes(Number(s.hunger)) ? Number(s.hunger) : 0;
   s.happiness = Math.min(12, Math.max(-1, Number(s.happiness) || 0));
   s.diets = Object.fromEntries(
@@ -21,15 +51,18 @@ export function normalizeSettings(input = {}) {
   for (const [k, v] of Object.entries(choices)) if (!v.includes(s[k])) s[k] = v[0];
   return s;
 }
-export function calculate(foodName, input = {}) {
+export function calculate(foodName, input = {}, productionKcal = null) {
   const s = normalizeSettings(input),
     food = foods.find((f) => f.name === foodName);
   if (!food) throw new Error('Unknown food: ' + foodName);
+  const forCrop = (name) => ({ ...s, ...s.crops[name] });
   const kcal =
-    s.hunger === -1000
-      ? 0
-      : (s.normal * Math.max(0, 1000 + s.hunger) + s.bottomless * Math.max(0, 1500 + s.hunger)) *
-        (1 + s.margin / 100);
+    productionKcal !== null
+      ? Math.max(0, Number(productionKcal) || 0)
+      : s.hunger === -1000
+        ? 0
+        : (s.normal * Math.max(0, 1000 + s.hunger) + s.bottomless * Math.max(0, 1500 + s.hunger)) *
+          (1 + s.margin / 100);
   const resources = {},
     resourceUnits = {},
     farm = {},
@@ -64,13 +97,16 @@ export function calculate(foodName, input = {}) {
     return node(name, amount, unit, 'resource', note);
   };
   function plant(p, count, note = '') {
+    const s = forCrop(p.name);
     const modifier = plantModifiers(p, s);
     add(farm, p.name, count);
     const children = (s.wild ? p.wildInputs || [] : p.inputs).map(([n, q]) =>
       walk(n, q * count * modifier.upkeep),
     );
     if (s.fertilizer && p.fertilizable)
-      children.push(walk('Fertilizer', 5 * count * (p.branches || 1)));
+      children.push(
+        walk('Fertilizer', (5 * count * (p.branches || 1)) / (1 + 0.1 * s.farmerSkill)),
+      );
     if (p.note) warnings.add(p.note);
     if (modifier.mutation !== 'None')
       warnings.add(
@@ -119,6 +155,7 @@ export function calculate(foodName, input = {}) {
     );
   }
   function graze(name, rate) {
+    const s = forCrop(name);
     const grown = Object.values(plants).find((p) => p.name === name);
     if (grown && !['Mealwood', 'Bonbon Tree', 'Arbor Tree'].includes(name))
       return plant(
@@ -256,6 +293,8 @@ export function calculate(foodName, input = {}) {
     if (path.includes(name)) throw new Error('Production cycle: ' + [...path, name].join(' → '));
     const unit = units.has(name) || name === 'Seeds' ? 'units/cycle' : 'kg/cycle';
     const n = node(name, amount, unit, 'ingredient');
+    if (name === 'Fertilizer' && !s.breakdownFertilizer)
+      return leaf(name, amount, unit, 'Supplied fertilizer');
     if (recipes[name]) {
       const r = recipes[name],
         industrial = ['Fertilizer', 'Ethanol', 'Snow'].includes(name);
@@ -270,6 +309,7 @@ export function calculate(foodName, input = {}) {
       return n;
     }
     if (plants[name]) {
+      const s = forCrop(plants[name].name);
       const p =
           name === 'Ovagro Fig'
             ? {
@@ -409,11 +449,11 @@ export function calculate(foodName, input = {}) {
     warnings.add(
       `Lumb harvesting: this plan needs about ${harvests.toFixed(2)} crop harvests/cycle. A Lumb stomps at most 10 times/cycle (60-second cooldown) and can harvest multiple ripe plants in its 2×2 footprint. At one ready crop per stomp, ${Math.ceil(harvests / 10)} Lumb(s) would cover the raw throughput; this is not a guaranteed staffing count. Walking, crop placement and accessible hanging crops matter. Lumb feed and replacements are not added for this optional service.`,
     );
-  if (s.fertilizer)
+  if (s.fertilizer || Object.values(s.crops).some((c) => c.fertilizer))
     warnings.add(
-      'Farmer’s Touch works on eligible wild and domestic plants. Fertilizer assumes 5 kg per application and a 1-cycle duration (0 Agriculture); skilled farmers can reduce consumption.',
+      `Farmer’s Touch uses 5 kg per application, lasting ${1 + 0.1 * s.farmerSkill} cycles at ${s.farmerSkill} Agriculture. This assumes continuous tending of eligible crops.`,
     );
-  if (s.lumbHarvest)
+  if (s.lumbHarvest || Object.values(s.crops).some((c) => c.lumbHarvest))
     warnings.add(
       `Lumb Harvest covers reachable land crops only, not aquatic crops. Plan for ${Math.ceil(lumbHarvests / 10)} wild Lumb(s) at one ripe crop per stomp, before travel headroom. They are harvest helpers, not breeders; their food and replacements are not included. Dupe Harvest still covers other crops when enabled.`,
     );

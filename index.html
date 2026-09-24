@@ -24,6 +24,13 @@
           <span class="muted">Settings ▾ · one cycle = 600 seconds</span>
         </summary>
         <div class="controls">
+          <div class="planning-mode">
+            <label>Plan by <button id="planning-mode" type="button">Colony size ▾</button></label>
+            <label id="target-control" hidden
+              ><span id="target-label">Target per cycle</span
+              ><input id="target-amount" type="number" min="0" step="any" value="1000"
+            /></label>
+          </div>
           <label
             >Normal dupes<input id="normal" type="number" min="0" max="100000" value="12"
           /></label>
@@ -118,6 +125,16 @@
         <div id="foods" class="foods"></div>
       </details>
       <section class="results" aria-label="Production plan">
+        <details id="supply-planner" class="assumptions" open hidden>
+          <summary>Available supplies &amp; capacity</summary>
+          <p>
+            Add resource, plant or breeder limits. The tightest limit sets production; other
+            supplies are assumed available.
+          </p>
+          <div id="supply-limits"></div>
+          <button id="add-limit" type="button">Add a limit</button>
+          <p id="capacity-result" aria-live="polite"></p>
+        </details>
         <div class="section-title">
           <span class="step">03</span>
           <h2>Production tree</h2>
@@ -135,6 +152,23 @@
           <div id="diets" class="routes" aria-label="Critter diets"></div>
         </div>
         <p id="live-impact" class="live-impact" aria-live="polite"></p>
+        <details class="assumptions" id="farm-options">
+          <summary>Individual crop settings &amp; fertilizer</summary>
+          <p>
+            Each crop follows your colony settings until you customize it. Changes apply to that
+            species throughout this plan, including ranch feed.
+          </p>
+          <div class="plan-options" id="crop-options"></div>
+          <div class="plan-options">
+            <label
+              >Farmer Agriculture<input id="farmerSkill" type="number" min="0" max="100" value="0"
+            /></label>
+            <label class="check"
+              ><input id="breakdownFertilizer" type="checkbox" checked /> Break down fertilizer
+              ingredients</label
+            >
+          </div>
+        </details>
         <div class="tree-toolbar">
           <label
             >Direction
@@ -187,6 +221,16 @@
         <details class="assumptions" open>
           <summary>Conditions &amp; calculation notes</summary>
           <p>
+            Waterweed data updated for U59: no Bleach Stone; 20 kg Salt Water per domestic plant per
+            cycle.
+            <a
+              href="https://oxygennotincluded.wiki.gg/wiki/Versions/U59-736649"
+              target="_blank"
+              rel="noreferrer"
+              >Update notes</a
+            >. Other calculation assumptions are listed below.
+          </p>
+          <p>
             Think of this as a starting plan for a settled colony. Keep your plants comfortable and
             leave some breathing room for travel, spoilage and the occasional missed harvest. The
             safety surplus helps with that.
@@ -195,9 +239,9 @@
           <p>
             We work backward from the meal and keep enough eggs to replace your breeders. Counts
             round up, but supplies use the exact estimate underneath. Wild applies to plants, not
-            your food-producing ranches. Smoker fuel and fertilizer ingredients are included; power,
-            cooling, cooking time and Gas Range fuel are not. Resource endpoints still need a supply
-            of their own.
+            your food-producing ranches. Smoker fuel is included; fertilizer ingredients can be
+            expanded. Power, cooling, cooking time and Gas Range fuel are not. Resource endpoints
+            still need a supply of their own.
           </p>
         </details>
         <details id="bonus-guide" class="bonus-guide">
@@ -264,6 +308,23 @@
     <dialog id="choice-dialog" aria-labelledby="choice-title">
       <h2 id="choice-title"></h2>
       <div id="choice-options"></div>
+    </dialog>
+    <dialog id="crop-dialog" aria-labelledby="crop-title">
+      <h2 id="crop-title">Crop settings</h2>
+      <p>Customize this crop, or return it to the shared colony settings.</p>
+      <div class="controls">
+        <label class="check"><input id="crop-wild" type="checkbox" /> Wild</label>
+        <label class="check"><input id="crop-harvest" type="checkbox" /> Dupe Harvest</label>
+        <label class="check"
+          ><input id="crop-lumbHarvest" type="checkbox" /> Lumb Harvest (eligible land crops)</label
+        >
+        <label class="check"
+          ><input id="crop-fertilizer" type="checkbox" /> Farmer’s Touch (eligible crops)</label
+        >
+        <label>Mutation<button id="crop-mutation" type="button"></button></label>
+        <label>Pollination<button id="crop-pollinator" type="button"></button></label>
+      </div>
+      <button id="crop-reset" type="button">Use colony settings</button>
     </dialog>
     <link rel="stylesheet" href="material.css" />
     <script type="module" src="main.js"></script>

@@ -196,10 +196,9 @@ export const plants = {
   'Bristle Berry': P('Bristle Blossom', 6, 1, [['Water', 20]], {
     note: 'Requires light, 5–30 °C.',
   }),
-  Lettuce: P('Waterweed', 12, 12, [
-    ['Bleach Stone', 0.5],
-    ['Salt Water', 5],
-  ]),
+  // U59-736649 removed Bleach Stone and raised irrigation to 20 kg/cycle.
+  // https://oxygennotincluded.wiki.gg/wiki/Waterweed
+  Lettuce: P('Waterweed', 12, 12, [['Salt Water', 20]]),
   'Pincha Peppernut': P('Pincha Pepperplant', 8, 4, [
     ['Phosphorite', 1],
     ['Polluted Water', 35],
@@ -367,6 +366,8 @@ export const defaults = {
   harvest: true,
   lumbHarvest: false,
   fertilizer: false,
+  farmerSkill: 0,
+  breakdownFertilizer: true,
   margin: 0,
   happiness: 4,
   mutation: 'None',
