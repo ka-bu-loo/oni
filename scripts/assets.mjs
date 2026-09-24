@@ -72,15 +72,13 @@ const valid = (file) =>
     .readFileSync(file)
     .subarray(0, 8)
     .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
-const list = [...names]
-  .sort()
-  .map((name) => ({
-    name,
-    path: asset(name),
-    page: wiki(name),
-    url: images.get(name) || null,
-    present: valid(asset(name)),
-  }));
+const list = [...names].sort().map((name) => ({
+  name,
+  path: asset(name),
+  page: wiki(name),
+  url: images.get(name) || null,
+  present: valid(asset(name)),
+}));
 if (process.argv.includes('--download'))
   for (const item of list.filter((x) => !x.present && x.url)) {
     try {
