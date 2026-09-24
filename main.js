@@ -275,7 +275,7 @@ for (const id of ['hunger', 'mutation', 'direction']) {
     $('choice-options').innerHTML = [...select.options]
       .map(
         (o, i) =>
-          `<button type="button" data-option="${i}" aria-pressed="${o.selected}">${esc(o.textContent)}${o.selected ? ' ✓' : ''}</button>`,
+          `<button type="button" data-option="${i}" aria-pressed="${o.selected}">${esc(o.textContent)}</button>`,
       )
       .join('');
     $('choice-options').onclick = (e) => {

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <title>ONI · Food Calculator</title>
+    <link rel="icon" type="image/png" href="assets/frost_burger.png" />
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
@@ -134,37 +135,12 @@
           <div id="diets" class="routes" aria-label="Critter diets"></div>
         </div>
         <p id="live-impact" class="live-impact" aria-live="polite"></p>
-        <details id="bonus-guide" class="bonus-guide">
-          <summary>How to reach this happiness</summary>
-          <div id="bonus-content"></div>
-          <p>
-            One example setup, assuming no crowding or temperature penalties. Use the appropriate
-            land, airborne or aquatic grooming station, condo and fountain for each species.
-            Building counts depend on your ranch layout. These support supplies are separate from
-            the food totals; Moo feed, replacement animals and travel time are not included.
-          </p>
-          <p>
-            <a
-              href="https://oxygennotincluded.wiki.gg/wiki/Critter_Fountain"
-              target="_blank"
-              rel="noreferrer"
-              >Fountain rates</a
-            >
-            ·
-            <a
-              href="https://oxygennotincluded.wiki.gg/wiki/Gassy_Moo"
-              target="_blank"
-              rel="noreferrer"
-              >Moo milking</a
-            >
-          </p>
-        </details>
         <div class="tree-toolbar">
           <label
             >Direction
             <select id="direction">
               <option value="vertical">Vertical</option>
-              <option value="horizontal">Horizontal staircase</option>
+              <option value="horizontal">Horizontal</option>
             </select></label
           ><label><input id="auto-fit" type="checkbox" checked /> Auto-fit</label
           ><button id="fit" class="quiet">Fit tree</button
@@ -224,6 +200,31 @@
             of their own.
           </p>
         </details>
+        <details id="bonus-guide" class="bonus-guide">
+          <summary>How to reach this happiness</summary>
+          <div id="bonus-content"></div>
+          <p>
+            One example setup, assuming no crowding or temperature penalties. Use the appropriate
+            land, airborne or aquatic grooming station, condo and fountain for each species.
+            Building counts depend on your ranch layout. These support supplies are separate from
+            the food totals; Moo feed, replacement animals and travel time are not included.
+          </p>
+          <p>
+            <a
+              href="https://oxygennotincluded.wiki.gg/wiki/Critter_Fountain"
+              target="_blank"
+              rel="noreferrer"
+              >Fountain rates</a
+            >
+            ·
+            <a
+              href="https://oxygennotincluded.wiki.gg/wiki/Gassy_Moo"
+              target="_blank"
+              rel="noreferrer"
+              >Moo milking</a
+            >
+          </p>
+        </details>
       </section>
     </main>
     <dialog id="about">
@@ -259,7 +260,6 @@
     <dialog id="picker">
       <h2 id="picker-title"></h2>
       <div id="picker-options" class="foods"></div>
-      <form method="dialog"><button>Cancel</button></form>
     </dialog>
     <dialog id="choice-dialog" aria-labelledby="choice-title">
       <h2 id="choice-title"></h2>
