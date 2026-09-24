@@ -768,16 +768,43 @@ dialog h2 {
 }
 #crop-options {
   margin-bottom: 20px;
+  gap: 12px;
+  align-items: stretch;
 }
 #crop-options button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 20px;
+  border: 0;
+  border-radius: var(--md-sys-shape-corner-large);
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 1 260px;
+  text-align: left;
+}
+#crop-options .sprite {
+  flex-shrink: 0;
+}
+#crop-options .crop-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
 #crop-options small {
-  flex-basis: 100%;
-  text-align: left;
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+}
+#farm-options .plan-options label.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  max-width: 100%;
+}
+#farm-options .check input {
+  flex-shrink: 0;
 }
 #crop-dialog {
   width: min(560px, calc(100vw - 32px));

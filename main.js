@@ -166,7 +166,7 @@ function render() {
     Object.keys(result.farm)
       .map(
         (name) =>
-          `<button type="button" data-crop="${esc(name)}">${sprite(name)}${esc(name)}<small>${settings.crops[name] ? 'Customized' : 'Colony settings'}</small></button>`,
+          `<button type="button" data-crop="${esc(name)}">${sprite(name)}<span class="crop-label">${esc(name)}<small>${settings.crops[name] ? 'Customized' : 'Colony settings'}</small></span></button>`,
       )
       .join('') || '<p>No crops in this plan.</p>';
   $('pollinator').innerHTML =
