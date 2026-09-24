@@ -1,44 +1,271 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><title>ONI · Food Calculator</title><link rel="stylesheet" href="index.css"></head>
-<body>
-<header class="masthead"><div><span class="eyebrow">OXYGEN NOT INCLUDED · FAN TOOL</span><h1>Food calculator<span class="dot">.</span></h1></div><button id="about-open">About & credits</button></header>
-<main>
- <details class="setup" id="colony-options" aria-label="Colony settings" open>
-  <summary class="section-title"><span class="step">01</span><h2>Your colony</h2><span class="muted">Settings ▾ · one cycle = 600 seconds</span></summary>
-  <div class="controls">
-   <label>Normal dupes<input id="normal" type="number" min="0" max="100000" value="12"></label>
-   <label>Bottomless stomach<input id="bottomless" type="number" min="0" max="100000" value="0"></label>
-   <label>Hunger<select id="hunger"><option value="1000">Ravenous</option><option value="500">Rumbly Tummies</option><option value="0" selected>Regular</option><option value="-500">Fasting</option><option value="-1000">Tummyless (no food)</option></select></label>
-   <label>Safety surplus (%)<input id="margin" type="number" min="0" max="100" value="0"></label>
-   <label class="check"><input id="harvest" type="checkbox" checked><span>Dupe Harvest</span></label>
-   <label class="check"><input id="lumbHarvest" type="checkbox"><span>Lumb Harvest<small>Reachable land crops only · wild helpers</small></span></label>
-   <label class="check"><input id="wild" type="checkbox"><span>Wild plants<small>Ranches remain tame &amp; fed</small></span></label>
-   <label class="check"><input id="fertilizer" type="checkbox"><span>Farmer’s Touch<small>Eligible wild and domestic plants</small></span></label>
-   <div class="modifier-group"><label class="check"><input id="pollinationEnabled" type="checkbox" checked><span>Pollination</span></label><button id="pollinator" type="button">None ▾</button><small>Required crop pollination remains included.</small></div>
-   <div class="modifier-group"><label class="check"><input id="mutationEnabled" type="checkbox" checked><span>Plant mutation</span></label><select id="mutation" aria-label="Plant mutation"></select><small>Spaced Out · eligible plants only</small></div>
-   <label class="advanced">Critter happiness<input id="happiness" type="number" min="-1" max="12" step="1" value="4"><small>4 = tame, fed + groomed; −1 = fed only. Supported bonuses top out at 10, or 12 for Pacu and Beakon. No cramped eggs.</small></label>
-   <label class="advanced" id="vine-control">Productive vines per Ovagro node<input id="ovagroVines" type="number" min="1" max="24" value="24"><small>Up to 12 on each side. Excludes establishment time.</small></label>
-  </div>
- </details>
- <details class="food-section" aria-label="Choose food"><summary>Change meal <span id="meal-label">Frost Burger</span></summary>
-  <div class="section-title"><span class="step">02</span><h2>Choose a meal</h2><span class="muted" id="food-count"></span><div class="filters"><input id="search" type="search" placeholder="Find a food…" aria-label="Search foods"><button id="dlc" class="pack-choice" aria-label="Filter food pack">All packs ▾</button></div></div>
-  <div id="foods" class="foods"></div>
- </details>
- <section class="results" aria-label="Production plan">
-  <div class="section-title"><span class="step">03</span><h2>Production tree</h2></div>
-  <div class="result-heading"><div><span class="eyebrow">YOUR DAILY MENU</span><h3 id="selected-name"></h3><p id="selected-detail"></p></div><div class="calories"><strong id="kcal"></strong><span>kcal / cycle</span></div></div>
-  <div id="routes" class="routes"></div>
-  <div id="diets" class="routes" aria-label="Critter diets"></div>
-  <p id="live-impact" class="live-impact" aria-live="polite"></p>
-  <div class="tree-toolbar"><label>Direction <select id="direction"><option value="vertical">Vertical</option><option value="horizontal">Horizontal staircase</option></select></label><label><input id="auto-fit" type="checkbox" checked> Auto-fit</label><button id="fit" class="quiet">Fit tree</button><label>Zoom <input id="zoom" type="number" min="10" max="200" value="100" aria-label="Tree zoom percent"> %</label></div>
-  <div id="tree-viewport" tabindex="0" aria-label="Production tree, scroll to explore"><div id="tree"></div></div>
-  <p class="tree-hint">Right/middle-drag to pan · Ctrl + wheel to zoom · F to fit · Click an item for its wiki. Arrows point toward the meal. Counts round up; hover for exact values.</p>
-  <details class="totals" open><summary>Colony manifest · farms, breeders & supplies</summary><div class="summary-grid"><section><h3>Build &amp; ranch</h3><p class="muted">Keep these breeders alive; harvest their surplus offspring.</p><div id="capacity"></div></section><section><h3>Supply per cycle</h3><p class="muted">Rounded up for display, not intermediate calculations</p><div id="resources"></div></section><section><h3>Production stations</h3><p class="muted">Batches per cycle, not building counts</p><div id="stations"></div></section></div></details>
-  <details class="assumptions" open><summary>Conditions &amp; calculation notes</summary><p>Think of this as a starting plan for a settled colony. Keep your plants comfortable and leave some breathing room for travel, spoilage and the occasional missed harvest. The safety surplus helps with that.</p><ul id="warnings"></ul><p>We work backward from the meal and keep enough eggs to replace your breeders. Counts round up, but supplies use the exact estimate underneath. Wild applies to plants, not your food-producing ranches. Smoker fuel and fertilizer ingredients are included; power, cooling, cooking time and Gas Range fuel are not. Resource endpoints still need a supply of their own.</p></details>
- </section>
-</main>
-<dialog id="about"><h2>A little help for your colony.</h2><p>Unofficial fan tool. Not affiliated with or endorsed by Klei Entertainment.</p><p>Game artwork © Klei Entertainment. Reference data and images from the <a href="https://oxygennotincluded.wiki.gg/wiki/Food_(Resource)" target="_blank" rel="noreferrer">ONI Wiki and its contributors</a>. Adapted wiki material is shared under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noreferrer">CC BY-NC-SA 4.0</a>, unless otherwise noted; game artwork remains subject to its original rights. Calculations and presentation are adapted for this tool.</p><p><a href="https://support.klei.com/hc/en-us/articles/360029880791-Player-Creation-Guidelines" target="_blank" rel="noreferrer">Klei’s player-creation guidelines</a> · Every diagram item links to its reference page.</p><form method="dialog"><button>Back to colony</button></form></dialog>
-<dialog id="picker"><h2 id="picker-title"></h2><div id="picker-options" class="foods"></div><form method="dialog"><button>Cancel</button></form></dialog>
-<link rel="stylesheet" href="material.css"><script type="module" src="main.js"></script>
-</body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>ONI · Food Calculator</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <header class="masthead">
+      <div>
+        <span class="eyebrow">OXYGEN NOT INCLUDED · FAN TOOL</span>
+        <h1>Food calculator<span class="dot">.</span></h1>
+      </div>
+      <button id="about-open">About & credits</button>
+    </header>
+    <main>
+      <details class="setup" id="colony-options" aria-label="Colony settings" open>
+        <summary class="section-title">
+          <span class="step">01</span>
+          <h2>Your colony</h2>
+          <span class="muted">Settings ▾ · one cycle = 600 seconds</span>
+        </summary>
+        <div class="controls">
+          <label
+            >Normal dupes<input id="normal" type="number" min="0" max="100000" value="12"
+          /></label>
+          <label
+            >Bottomless stomach<input id="bottomless" type="number" min="0" max="100000" value="0"
+          /></label>
+          <label
+            >Hunger<select id="hunger">
+              <option value="1000">Ravenous</option>
+              <option value="500">Rumbly Tummies</option>
+              <option value="0" selected>Regular</option>
+              <option value="-500">Fasting</option>
+              <option value="-1000">Tummyless (no food)</option>
+            </select></label
+          >
+          <label
+            >Safety surplus (%)<input id="margin" type="number" min="0" max="100" value="0"
+          /></label>
+          <label class="check"
+            ><input id="harvest" type="checkbox" checked /><span>Dupe Harvest</span></label
+          >
+          <label class="check"
+            ><input id="lumbHarvest" type="checkbox" /><span
+              >Lumb Harvest<small>Reachable land crops only · wild helpers</small></span
+            ></label
+          >
+          <label class="check"><input id="wild" type="checkbox" /><span>Wild plants</span></label>
+          <label class="check"
+            ><input id="fertilizer" type="checkbox" /><span
+              >Farmer’s Touch<small>Eligible wild and domestic plants</small></span
+            ></label
+          >
+          <div class="modifier-group">
+            <label class="check"
+              ><input id="pollinationEnabled" type="checkbox" checked /><span
+                >Pollination</span
+              ></label
+            ><button id="pollinator" type="button">None ▾</button>
+          </div>
+          <div class="modifier-group">
+            <label class="check"
+              ><input id="mutationEnabled" type="checkbox" checked /><span
+                >Plant mutation</span
+              ></label
+            ><select id="mutation" aria-label="Plant mutation"></select
+            ><small>Spaced Out · eligible plants only</small>
+          </div>
+          <label class="advanced"
+            >Critter happiness<input
+              id="happiness"
+              type="number"
+              min="-1"
+              max="12"
+              step="1"
+              value="4"
+            /><small
+              >4 = tame, fed + groomed; −1 = fed only. Supported bonuses top out at 10, or 12 for
+              Pacu and Beakon. No cramped eggs.</small
+            ></label
+          >
+          <label class="advanced" id="vine-control"
+            >Productive vines per Ovagro node<input
+              id="ovagroVines"
+              type="number"
+              min="1"
+              max="24"
+              value="24"
+            /><small>Up to 12 on each side. Excludes establishment time.</small></label
+          >
+        </div>
+      </details>
+      <details class="food-section" aria-label="Choose food">
+        <summary>Change meal <span id="meal-label">Frost Burger</span></summary>
+        <button type="button" class="popup-close" id="meal-close" aria-label="Close meal picker">
+          ×
+        </button>
+        <div class="section-title">
+          <span class="step">02</span>
+          <h2>Choose a meal</h2>
+          <span class="muted" id="food-count"></span>
+          <div class="filters">
+            <input
+              id="search"
+              type="search"
+              placeholder="Find a food…"
+              aria-label="Search foods"
+            /><button id="dlc" class="pack-choice" aria-label="Filter food pack">
+              All packs ▾
+            </button>
+          </div>
+        </div>
+        <div id="foods" class="foods"></div>
+      </details>
+      <section class="results" aria-label="Production plan">
+        <div class="section-title">
+          <span class="step">03</span>
+          <h2>Production tree</h2>
+        </div>
+        <div class="result-heading">
+          <div>
+            <span class="eyebrow">YOUR DAILY MENU</span>
+            <h3 id="selected-name"></h3>
+            <p id="selected-detail"></p>
+          </div>
+          <div class="calories"><strong id="kcal"></strong><span>kcal / cycle</span></div>
+        </div>
+        <div class="plan-options">
+          <div id="routes" class="routes"></div>
+          <div id="diets" class="routes" aria-label="Critter diets"></div>
+        </div>
+        <p id="live-impact" class="live-impact" aria-live="polite"></p>
+        <details id="bonus-guide" class="bonus-guide">
+          <summary>How to reach this happiness</summary>
+          <div id="bonus-content"></div>
+          <p>
+            One example setup, assuming no crowding or temperature penalties. Use the appropriate
+            land, airborne or aquatic grooming station, condo and fountain for each species.
+            Building counts depend on your ranch layout. These support supplies are separate from
+            the food totals; Moo feed, replacement animals and travel time are not included.
+          </p>
+          <p>
+            <a
+              href="https://oxygennotincluded.wiki.gg/wiki/Critter_Fountain"
+              target="_blank"
+              rel="noreferrer"
+              >Fountain rates</a
+            >
+            ·
+            <a
+              href="https://oxygennotincluded.wiki.gg/wiki/Gassy_Moo"
+              target="_blank"
+              rel="noreferrer"
+              >Moo milking</a
+            >
+          </p>
+        </details>
+        <div class="tree-toolbar">
+          <label
+            >Direction
+            <select id="direction">
+              <option value="vertical">Vertical</option>
+              <option value="horizontal">Horizontal staircase</option>
+            </select></label
+          ><label><input id="auto-fit" type="checkbox" checked /> Auto-fit</label
+          ><button id="fit" class="quiet">Fit tree</button
+          ><label
+            >Zoom
+            <input
+              id="zoom"
+              type="number"
+              min="10"
+              max="200"
+              value="100"
+              aria-label="Tree zoom percent"
+            />
+            %</label
+          >
+        </div>
+        <div id="tree-viewport" tabindex="0" aria-label="Production tree, scroll to explore">
+          <div id="tree"></div>
+        </div>
+        <p class="tree-hint">
+          Right/middle-drag to pan · Ctrl + wheel to zoom · F to fit · Click an item for its wiki.
+          Arrows point toward the meal. Counts round up; hover for exact values.
+        </p>
+        <details class="totals" open>
+          <summary>Colony manifest · farms, breeders & supplies</summary>
+          <div class="summary-grid">
+            <section>
+              <h3>Build &amp; ranch</h3>
+              <p class="muted">Keep these breeders alive; harvest their surplus offspring.</p>
+              <div id="capacity"></div>
+            </section>
+            <section>
+              <h3>Supply per cycle</h3>
+              <p class="muted">Rounded up for display, not intermediate calculations</p>
+              <div id="resources"></div>
+            </section>
+            <section>
+              <h3>Production stations</h3>
+              <p class="muted">Batches per cycle, not building counts</p>
+              <div id="stations"></div>
+            </section>
+          </div>
+        </details>
+        <details class="assumptions" open>
+          <summary>Conditions &amp; calculation notes</summary>
+          <p>
+            Think of this as a starting plan for a settled colony. Keep your plants comfortable and
+            leave some breathing room for travel, spoilage and the occasional missed harvest. The
+            safety surplus helps with that.
+          </p>
+          <ul id="warnings"></ul>
+          <p>
+            We work backward from the meal and keep enough eggs to replace your breeders. Counts
+            round up, but supplies use the exact estimate underneath. Wild applies to plants, not
+            your food-producing ranches. Smoker fuel and fertilizer ingredients are included; power,
+            cooling, cooking time and Gas Range fuel are not. Resource endpoints still need a supply
+            of their own.
+          </p>
+        </details>
+      </section>
+    </main>
+    <dialog id="about">
+      <h2>A little help for your colony.</h2>
+      <p>Unofficial fan tool. Not affiliated with or endorsed by Klei Entertainment.</p>
+      <p>
+        Game artwork © Klei Entertainment. Reference data and images from the
+        <a
+          href="https://oxygennotincluded.wiki.gg/wiki/Food_(Resource)"
+          target="_blank"
+          rel="noreferrer"
+          >ONI Wiki and its contributors</a
+        >. Adapted wiki material is shared under
+        <a
+          href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+          target="_blank"
+          rel="noreferrer"
+          >CC BY-NC-SA 4.0</a
+        >, unless otherwise noted; game artwork remains subject to its original rights. Calculations
+        and presentation are adapted for this tool.
+      </p>
+      <p>
+        <a
+          href="https://support.klei.com/hc/en-us/articles/360029880791-Player-Creation-Guidelines"
+          target="_blank"
+          rel="noreferrer"
+          >Klei’s player-creation guidelines</a
+        >
+        · Every diagram item links to its reference page.
+      </p>
+      <form method="dialog"><button>Back to colony</button></form>
+    </dialog>
+    <dialog id="picker">
+      <h2 id="picker-title"></h2>
+      <div id="picker-options" class="foods"></div>
+      <form method="dialog"><button>Cancel</button></form>
+    </dialog>
+    <dialog id="choice-dialog" aria-labelledby="choice-title">
+      <h2 id="choice-title"></h2>
+      <div id="choice-options"></div>
+    </dialog>
+    <link rel="stylesheet" href="material.css" />
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

@@ -8,5 +8,7 @@
     "build": "node scripts/build.mjs",
     "assets": "node scripts/assets.mjs"
   },
-  "engines": {"node": ">=22"}
+  "engines": {
+    "node": ">=22"
+  }
 }

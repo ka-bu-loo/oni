@@ -1,393 +1,393 @@
 // Snapshot of the wiki food table, audited September 2026.
 export const foods = [
   {
-    "name": "Barbeque",
-    "kcal": 4000,
-    "q": 3,
-    "dlc": "Base"
+    name: 'Barbeque',
+    kcal: 4000,
+    q: 3,
+    dlc: 'Base',
   },
   {
-    "name": "Berry Sludge",
-    "kcal": 4000,
-    "q": 3,
-    "dlc": "Base"
+    name: 'Berry Sludge',
+    kcal: 4000,
+    q: 3,
+    dlc: 'Base',
   },
   {
-    "name": "Bog Jelly",
-    "kcal": 1840,
-    "q": 0,
-    "dlc": "Spaced Out"
+    name: 'Bog Jelly',
+    kcal: 1840,
+    q: 0,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Bristle Berry",
-    "kcal": 1600,
-    "q": 0,
-    "dlc": "Base"
+    name: 'Bristle Berry',
+    kcal: 1600,
+    q: 0,
+    dlc: 'Base',
   },
   {
-    "name": "Calamari",
-    "kcal": 800,
-    "q": 2,
-    "dlc": "Aquatic"
+    name: 'Calamari',
+    kcal: 800,
+    q: 2,
+    dlc: 'Aquatic',
   },
   {
-    "name": "Cooked Seafood",
-    "kcal": 1600,
-    "q": 3,
-    "dlc": "Base"
+    name: 'Cooked Seafood',
+    kcal: 1600,
+    q: 3,
+    dlc: 'Base',
   },
   {
-    "name": "Curried Beans",
-    "kcal": 5000,
-    "q": 4,
-    "dlc": "Base"
+    name: 'Curried Beans',
+    kcal: 5000,
+    q: 4,
+    dlc: 'Base',
   },
   {
-    "name": "Edamame",
-    "kcal": 1450,
-    "q": 3,
-    "dlc": "Aquatic"
+    name: 'Edamame',
+    kcal: 1450,
+    q: 3,
+    dlc: 'Aquatic',
   },
   {
-    "name": "Fish Taco",
-    "kcal": 4200,
-    "q": 4,
-    "dlc": "Frosty"
+    name: 'Fish Taco',
+    kcal: 4200,
+    q: 4,
+    dlc: 'Frosty',
   },
   {
-    "name": "Fried Mushroom",
-    "kcal": 2800,
-    "q": 1,
-    "dlc": "Base"
+    name: 'Fried Mushroom',
+    kcal: 2800,
+    q: 1,
+    dlc: 'Base',
   },
   {
-    "name": "Frost Bun",
-    "kcal": 1200,
-    "q": 2,
-    "dlc": "Base"
+    name: 'Frost Bun',
+    kcal: 1200,
+    q: 2,
+    dlc: 'Base',
   },
   {
-    "name": "Frost Burger",
-    "kcal": 6000,
-    "q": 6,
-    "dlc": "Base"
+    name: 'Frost Burger',
+    kcal: 6000,
+    q: 6,
+    dlc: 'Base',
   },
   {
-    "name": "Gristle Berry",
-    "kcal": 2000,
-    "q": 1,
-    "dlc": "Base"
+    name: 'Gristle Berry',
+    kcal: 2000,
+    q: 1,
+    dlc: 'Base',
   },
   {
-    "name": "Grubfruit Preserve",
-    "kcal": 2400,
-    "q": 3,
-    "dlc": "Spaced Out"
+    name: 'Grubfruit Preserve',
+    kcal: 2400,
+    q: 3,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Grubfruit",
-    "kcal": 250,
-    "q": 1,
-    "dlc": "Spaced Out"
+    name: 'Grubfruit',
+    kcal: 250,
+    q: 1,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Hexalent Fruit",
-    "kcal": 6400,
-    "q": -1,
-    "dlc": "Base"
+    name: 'Hexalent Fruit',
+    kcal: 6400,
+    q: -1,
+    dlc: 'Base',
   },
   {
-    "name": "Jawbo Fillet",
-    "kcal": 1000,
-    "q": 3,
-    "dlc": "Prehistoric"
+    name: 'Jawbo Fillet',
+    kcal: 1000,
+    q: 3,
+    dlc: 'Prehistoric',
   },
   {
-    "name": "Lettuce",
-    "kcal": 400,
-    "q": 0,
-    "dlc": "Base"
+    name: 'Lettuce',
+    kcal: 400,
+    q: 0,
+    dlc: 'Base',
   },
   {
-    "name": "Liceloaf",
-    "kcal": 1700,
-    "q": 0,
-    "dlc": "Base"
+    name: 'Liceloaf',
+    kcal: 1700,
+    q: 0,
+    dlc: 'Base',
   },
   {
-    "name": "Meal Lice",
-    "kcal": 600,
-    "q": -1,
-    "dlc": "Base"
+    name: 'Meal Lice',
+    kcal: 600,
+    q: -1,
+    dlc: 'Base',
   },
   {
-    "name": "Meat",
-    "kcal": 1600,
-    "q": -1,
-    "dlc": "Base"
+    name: 'Meat',
+    kcal: 1600,
+    q: -1,
+    dlc: 'Base',
   },
   {
-    "name": "Mixed Berry Pie",
-    "kcal": 4200,
-    "q": 5,
-    "dlc": "Spaced Out"
+    name: 'Mixed Berry Pie',
+    kcal: 4200,
+    q: 5,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Muckroot",
-    "kcal": 800,
-    "q": -1,
-    "dlc": "Base"
+    name: 'Muckroot',
+    kcal: 800,
+    q: -1,
+    dlc: 'Base',
   },
   {
-    "name": "Mush Bar",
-    "kcal": 800,
-    "q": -1,
-    "dlc": "Base"
+    name: 'Mush Bar',
+    kcal: 800,
+    q: -1,
+    dlc: 'Base',
   },
   {
-    "name": "Mush Fry",
-    "kcal": 1050,
-    "q": 0,
-    "dlc": "Base"
+    name: 'Mush Fry',
+    kcal: 1050,
+    q: 0,
+    dlc: 'Base',
   },
   {
-    "name": "Mushroom Quiche",
-    "kcal": 6400,
-    "q": 5,
-    "dlc": "Base"
+    name: 'Mushroom Quiche',
+    kcal: 6400,
+    q: 5,
+    dlc: 'Base',
   },
   {
-    "name": "Mushroom Wrap",
-    "kcal": 4800,
-    "q": 4,
-    "dlc": "Base"
+    name: 'Mushroom Wrap',
+    kcal: 4800,
+    q: 4,
+    dlc: 'Base',
   },
   {
-    "name": "Mushroom",
-    "kcal": 2400,
-    "q": 0,
-    "dlc": "Base"
+    name: 'Mushroom',
+    kcal: 2400,
+    q: 0,
+    dlc: 'Base',
   },
   {
-    "name": "Mussel Tongue",
-    "kcal": 2800,
-    "q": -1,
-    "dlc": "Aquatic"
+    name: 'Mussel Tongue',
+    kcal: 2800,
+    q: -1,
+    dlc: 'Aquatic',
   },
   {
-    "name": "Nigiri",
-    "kcal": 3600,
-    "q": 5,
-    "dlc": "Aquatic"
+    name: 'Nigiri',
+    kcal: 3600,
+    q: 5,
+    dlc: 'Aquatic',
   },
   {
-    "name": "Nosh Noms",
-    "kcal": 5000,
-    "q": 3,
-    "dlc": "Frosty"
+    name: 'Nosh Noms',
+    kcal: 5000,
+    q: 3,
+    dlc: 'Frosty',
   },
   {
-    "name": "Nutrient Bar",
-    "kcal": 800,
-    "q": -1,
-    "dlc": "Base"
+    name: 'Nutrient Bar',
+    kcal: 800,
+    q: -1,
+    dlc: 'Base',
   },
   {
-    "name": "Omelette",
-    "kcal": 2800,
-    "q": 2,
-    "dlc": "Base"
+    name: 'Omelette',
+    kcal: 2800,
+    q: 2,
+    dlc: 'Base',
   },
   {
-    "name": "Ovagro Fig",
-    "kcal": 325,
-    "q": 0,
-    "dlc": "Prehistoric"
+    name: 'Ovagro Fig',
+    kcal: 325,
+    q: 0,
+    dlc: 'Prehistoric',
   },
   {
-    "name": "Fish Fillet",
-    "kcal": 1000,
-    "q": 2,
-    "dlc": "Base"
+    name: 'Fish Fillet',
+    kcal: 1000,
+    q: 2,
+    dlc: 'Base',
   },
   {
-    "name": "Pemmican",
-    "kcal": 2600,
-    "q": 2,
-    "dlc": "Frosty"
+    name: 'Pemmican',
+    kcal: 2600,
+    q: 2,
+    dlc: 'Frosty',
   },
   {
-    "name": "Pepper Bread",
-    "kcal": 4000,
-    "q": 5,
-    "dlc": "Base"
+    name: 'Pepper Bread',
+    kcal: 4000,
+    q: 5,
+    dlc: 'Base',
   },
   {
-    "name": "Pickled Meal",
-    "kcal": 1800,
-    "q": -1,
-    "dlc": "Base"
+    name: 'Pickled Meal',
+    kcal: 1800,
+    q: -1,
+    dlc: 'Base',
   },
   {
-    "name": "Pikeapple Skewer",
-    "kcal": 1200,
-    "q": 1,
-    "dlc": "Frosty"
+    name: 'Pikeapple Skewer',
+    kcal: 1200,
+    q: 1,
+    dlc: 'Frosty',
   },
   {
-    "name": "Pikeapple",
-    "kcal": 800,
-    "q": -1,
-    "dlc": "Frosty"
+    name: 'Pikeapple',
+    kcal: 800,
+    q: -1,
+    dlc: 'Frosty',
   },
   {
-    "name": "Plant Meat",
-    "kcal": 1200,
-    "q": 1,
-    "dlc": "Spaced Out"
+    name: 'Plant Meat',
+    kcal: 1200,
+    q: 1,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Plume Squash",
-    "kcal": 4000,
-    "q": 0,
-    "dlc": "Frosty"
+    name: 'Plume Squash',
+    kcal: 4000,
+    q: 0,
+    dlc: 'Frosty',
   },
   {
-    "name": "Raw Egg",
-    "kcal": 1600,
-    "q": -1,
-    "dlc": "Base"
+    name: 'Raw Egg',
+    kcal: 1600,
+    q: -1,
+    dlc: 'Base',
   },
   {
-    "name": "Raw Shellfish",
-    "kcal": 1000,
-    "q": 2,
-    "dlc": "Base"
+    name: 'Raw Shellfish',
+    kcal: 1000,
+    q: 2,
+    dlc: 'Base',
   },
   {
-    "name": "Roast Grubfruit Nut",
-    "kcal": 1200,
-    "q": 1,
-    "dlc": "Spaced Out"
+    name: 'Roast Grubfruit Nut',
+    kcal: 1200,
+    q: 1,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Salty Sticks",
-    "kcal": 600,
-    "q": -1,
-    "dlc": "Aquatic"
+    name: 'Salty Sticks',
+    kcal: 600,
+    q: -1,
+    dlc: 'Aquatic',
   },
   {
-    "name": "Shellfish Tempura",
-    "kcal": 4200,
-    "q": 4,
-    "dlc": "Frosty"
+    name: 'Shellfish Tempura',
+    kcal: 4200,
+    q: 4,
+    dlc: 'Frosty',
   },
   {
-    "name": "Sherberry",
-    "kcal": 800,
-    "q": -1,
-    "dlc": "Frosty"
+    name: 'Sherberry',
+    kcal: 800,
+    q: -1,
+    dlc: 'Frosty',
   },
   {
-    "name": "Smoked Fish",
-    "kcal": 2800,
-    "q": 3,
-    "dlc": "Prehistoric"
+    name: 'Smoked Fish',
+    kcal: 2800,
+    q: 3,
+    dlc: 'Prehistoric',
   },
   {
-    "name": "Snac Fruit",
-    "kcal": 800,
-    "q": -1,
-    "dlc": "Prehistoric"
+    name: 'Snac Fruit',
+    kcal: 800,
+    q: -1,
+    dlc: 'Prehistoric',
   },
   {
-    "name": "Soufflé Pancakes",
-    "kcal": 3600,
-    "q": 3,
-    "dlc": "Base"
+    name: 'Soufflé Pancakes',
+    kcal: 3600,
+    q: 3,
+    dlc: 'Base',
   },
   {
-    "name": "Spicy Tofu",
-    "kcal": 4000,
-    "q": 5,
-    "dlc": "Base"
+    name: 'Spicy Tofu',
+    kcal: 4000,
+    q: 5,
+    dlc: 'Base',
   },
   {
-    "name": "Spindly Grubfruit",
-    "kcal": 800,
-    "q": 0,
-    "dlc": "Spaced Out"
+    name: 'Spindly Grubfruit',
+    kcal: 800,
+    q: 0,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Squash Fries",
-    "kcal": 5400,
-    "q": 3,
-    "dlc": "Frosty"
+    name: 'Squash Fries',
+    kcal: 5400,
+    q: 3,
+    dlc: 'Frosty',
   },
   {
-    "name": "Stuffed Berry",
-    "kcal": 4400,
-    "q": 4,
-    "dlc": "Base"
+    name: 'Stuffed Berry',
+    kcal: 4400,
+    q: 4,
+    dlc: 'Base',
   },
   {
-    "name": "Surf'n'Turf",
-    "kcal": 6000,
-    "q": 4,
-    "dlc": "Base"
+    name: "Surf'n'Turf",
+    kcal: 6000,
+    q: 4,
+    dlc: 'Base',
   },
   {
-    "name": "Sushi Roll",
-    "kcal": 3600,
-    "q": 4,
-    "dlc": "Aquatic"
+    name: 'Sushi Roll',
+    kcal: 3600,
+    q: 4,
+    dlc: 'Aquatic',
   },
   {
-    "name": "Swamp Chard Heart",
-    "kcal": 2400,
-    "q": -1,
-    "dlc": "Spaced Out"
+    name: 'Swamp Chard Heart',
+    kcal: 2400,
+    q: -1,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Swampy Delights",
-    "kcal": 2240,
-    "q": 1,
-    "dlc": "Spaced Out"
+    name: 'Swampy Delights',
+    kcal: 2240,
+    q: 1,
+    dlc: 'Spaced Out',
   },
   {
-    "name": "Sweatcorn",
-    "kcal": 800,
-    "q": -1,
-    "dlc": "Prehistoric"
+    name: 'Sweatcorn',
+    kcal: 800,
+    q: -1,
+    dlc: 'Prehistoric',
   },
   {
-    "name": "Tender Brisket",
-    "kcal": 5000,
-    "q": 3,
-    "dlc": "Prehistoric"
+    name: 'Tender Brisket',
+    kcal: 5000,
+    q: 3,
+    dlc: 'Prehistoric',
   },
   {
-    "name": "Toasted Mimillet",
-    "kcal": 1500,
-    "q": 1,
-    "dlc": "Prehistoric"
+    name: 'Toasted Mimillet',
+    kcal: 1500,
+    q: 1,
+    dlc: 'Prehistoric',
   },
   {
-    "name": "Tofu",
-    "kcal": 3600,
-    "q": 2,
-    "dlc": "Base"
+    name: 'Tofu',
+    kcal: 3600,
+    q: 2,
+    dlc: 'Base',
   },
   {
-    "name": "Uni",
-    "kcal": 7200,
-    "q": 3,
-    "dlc": "Aquatic"
+    name: 'Uni',
+    kcal: 7200,
+    q: 3,
+    dlc: 'Aquatic',
   },
   {
-    "name": "Veggie Poppers",
-    "kcal": 2863,
-    "q": 2,
-    "dlc": "Prehistoric"
-  }
+    name: 'Veggie Poppers',
+    kcal: 2863,
+    q: 2,
+    dlc: 'Prehistoric',
+  },
 ];
