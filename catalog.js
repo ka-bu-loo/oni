@@ -4,7 +4,7 @@ export const slug=n=>n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g
 export const imageAliases={"Surf'n'Turf":'surfnturf','Soufflé Pancakes':'souffl_pancakes'};
 export const asset=n=>`assets/${imageAliases[n]||slug(n)}.png`;
 export const wiki=n=>'https://oxygennotincluded.wiki.gg/wiki/'+encodeURIComponent(n.replaceAll(' ','_'));
-export const units=new Set(['Sleet Wheat Grain','Megafrond Grain','Nosh Bean','Mimillet','Pinpoki','Tonic Root','Mimika','Kelpole']);
+export const units=new Set(['Sleet Wheat Grain','Megafrond Grain','Nosh Bean','Mimillet','Pinpoki','Tonic Root','Mimika','Kelpole','Dewdrip']);
 const R=(station,inputs,output=1,note='')=>({station,inputs,output,note});
 export const recipes={
  'Frost Burger':R('Gas Range',[['Frost Bun',1],['Lettuce',1],['Barbeque',1]]),
@@ -49,6 +49,7 @@ export const recipes={
  'Fertilizer':R('Fertilizer Synthesizer',[['Dirt',65/120],['Polluted Water',39/120],['Phosphorite',26/120]]),
  'Ethanol':R('Ethanol Distiller',[['Wood',2]]),
  'Snow':R('Ice Maker',[['Water',1]])
+ ,'Pacu Treat':R('Microbe Musher',[['Seeds',6],['Water',30]],1,'Pacu Treat uses six eligible crop seeds and 30 kg water per kg. Treat happiness is not added automatically; include it in the actual critter happiness setting.')
 };
 const P=(name,cycles,yield_,inputs,options={})=>({name,cycles,yield:yield_,inputs,fertilizable:true,...options});
 export const plants={
@@ -60,12 +61,12 @@ export const plants={
  'Sleet Wheat Grain':P('Sleet Wheat',18,18,[['Dirt',5],['Water',20]]),
  'Megafrond Grain':P('Megafrond',9,36,[['Chlorine Gas',54]],{fertilizable:false,wildInputs:[['Chlorine Gas',13.5]]}),
  'Nosh Bean':P('Nosh Sprout',21,12,[['Dirt',5],['Ethanol',20]]),
- 'Grubfruit':P('Grubfruit Plant',8,8,[['Sulfur',10]],{note:'Requires Divergent tending to grow full Grubfruit rather than Spindly Grubfruit. Pollinator capacity is not modeled.'}),
+ 'Grubfruit':P('Grubfruit Plant',8,8,[['Sulfur',10]],{note:'Requires Sweetle or Grubgrub tending to form full Grubfruit. Mimika cannot perform this conversion.'}),
  'Spindly Grubfruit':P('Spindly Grubfruit Plant',4,1,[['Sulfur',10]]),
  'Bog Jelly':P('Bog Bucket',6.6,1,[['Polluted Water',40]]),
  'Pikeapple':P('Pikeapple Bush',3,1,[['Phosphorite',5]]),
  'Plume Squash':P('Plume Squash Plant',9,1,[['Ethanol',15]]),
- 'Sweatcorn':P('Sweatcorn Stalk',3,1,[['Peat',10]],{note:'Needs pollination. Conservative base growth; pollination speed bonus and pollinator capacity are not included.'}),
+ 'Sweatcorn':P('Sweatcorn Stalk',3,1,[['Peat',10]],{note:'Must stay pollinated to grow. Selected bonus assumes continuous coverage; allow extra pollinators for travel downtime.'}),
  'Salty Sticks':P('Sodicane',4,1,[['Salt',10]],{fertilizable:false}),
  'Pinpoki':P('Pinpoket',16,1,[['Refined Carbon',5]],{note:'Must be submerged; 40–80 °C.'}),
  'Mimika':P('Mimika Bud',5,1,[['Dirt',10]],{selfHarvest:true,note:'Self-harvests a Mimika; it later dies into one Mimillet. Allow startup time.'}),
@@ -73,6 +74,8 @@ export const plants={
  'Kelpole':P('Tower Kelp',3,8,[['Polluted Water',30],['Polluted Dirt',40]],{branches:8,note:'Assumes 8 mature branches per tower. Harvested Kelpoles yield Nori on death.'}),
  'Wood':P('Arbor Tree',4.5,1500,[['Polluted Water',70],['Dirt',10]],{branches:5,note:'Five productive branches. First growth and hauling are not included.'}),
  'Plant Meat':P('Saturn Critter Trap',30,10,[['Polluted Water',10]],{mustHarvest:true,note:'Must be dupe-harvested. Consumes one small land critter per harvest.'})
+ ,'Dewdrip':P('Dew Dripper',2,1,[['Brine Ice',10]],{selfHarvest:true,fertilizable:false,note:'Dartles harvest dew directly from the plant.'})
+ ,'Seakomb Leaf':P('Seakomb',5,50,[['Polluted Dirt',10]],{fertilizable:false,note:'Submerged plant. No Lumb harvesting; tending bonuses are not assumed.'})
 };
 // Happy tame adults, steady-state surplus eggs with replacement allowance.
 const C=(drop,period,life,diet,space=12)=>({drop,period,life,baby:5,diet,space});
@@ -81,7 +84,41 @@ export const critters={
  'Stone Hatch':C(2,6,100,[['Igneous Rock',140]]),
  'Sage Hatch':C(2,6,100,[['Dirt',140]]),
  'Drecko':C(2,9,150,[['@Mealwood',.25]]),
+ 'Smooth Hatch':C(2,6,100,[['Iron Ore',100]]),
+ 'Glossy Drecko':C(2,9,150,[['@Mealwood',1/3]]),
+ 'Slickster':C(2,6,100,[['Carbon Dioxide',20]]),
+ 'Molten Slickster':C(2,6,100,[['Carbon Dioxide',20]]),
+ 'Longhair Slickster':C(2,9,150,[['Oxygen',30]]),
+ 'Pip':C(1,6,100,[['@Thimble Reed',.2]]),
+ 'Cuddle Pip':C(1,6,100,[['@Thimble Reed',.25]],4),
+ 'Puft':C(1,4.5,75,[['Polluted Oxygen',50]],16),
+ 'Puft Prince':C(1,4.5,75,[['Polluted Oxygen',30]],16),
+ 'Dense Puft':C(1,4.5,75,[['Oxygen',50]],16),
+ 'Squeaky Puft':C(1,4.5,75,[['Chlorine Gas',30]],16),
+ 'Shove Vole':C(10,6,100,[['Regolith',4800]],0),
+ 'Delecta Vole':C(5,6,100,[['Regolith',4800]],0),
+ 'Sweetle':C(1,4.5,75,[['Sulfur',20]]),
+ 'Grubgrub':C(3,9,150,[['Sulfur',50]],16),
+ 'Plug Slug':C(2,6,100,[['Iron Ore',60]]),
+ 'Smog Slug':C(2,6,100,[['Iron Ore',30]]),
+ 'Sponge Slug':C(2,6,100,[['Iron Ore',30]]),
+ 'Bammoth':C(14,12,200,[['Nosh Bean',1.6]],16),
+ 'Regal Bammoth':C(14,12,200,[['Nosh Bean',1.6]],16),
+ 'Flox':C(1,6,100,[['Pikeapple',.2]]),
+ 'Shatter Flox':C(1,6,100,[['Pikeapple',.2]]),
+ 'Dartle':C(.5,3,50,[['Dewdrip',1]],4),
+ 'Slogo':C(.5,1.5,25,[['Salt',100]]),
+ 'Gildgo':C(.5,1.5,25,[['Sulfur',100]]),
+ 'Gassy Moo':{...C(10,16,75,[['@Gas Grass',.5]],16),baby:0,fixedPeriod:true},
+ 'Husky Moo':{...C(10,16,75,[['@Gas Grass',.5]],16),baby:0,fixedPeriod:true},
  'Pacu':C(1,1.5,25,[['Algae',7.5]],8),
+ 'Tropical Pacu':C(1,1.5,25,[['Algae',7.5]],8),
+ 'Gulp Fish':C(1,1.5,25,[['Algae',7.5]],8),
+ 'Blowter':C(1,1.5,25,[['Lettuce',1]],8),
+ 'Beakon':C(1,1.5,25,[['Phosphorite',10]],8),
+ 'Seaquine':C(1,6,100,[['Pearl',3.1]],8),
+ 'Orehull':C(6,6,100,[['Nori',20]]),
+ 'Rhex':C(5,12,200,[['Meat',.5]],16),
  'Sanishell':C(4,6,100,[['Polluted Dirt',15]]),
  'Glo Squid':C(12,6,100,[['@Tublia',.25]]),
  'Jawbo':C(12,6,100,[['Fish Fillet',1]]),
@@ -89,5 +126,6 @@ export const critters={
  'Lumb':C(12,12,200,[['Ovagro Fig',4]],16)
 };
 export const foraged={'Muckroot':'Buried Muckroot','Hexalent Fruit':'Hexalent','Swamp Chard Heart':'Swamp Chard','Sherberry':'Sherberry Plant','Snac Fruit':'Snactus','Mussel Tongue':'Mussel Sprout','Nutrient Bar':'Ration Box'};
-export const choices={grain:['Sleet Wheat Grain','Megafrond Grain'],meat:['Hatch','Stone Hatch','Sage Hatch','Drecko'],seafood:['Fish Fillet','Raw Shellfish'],fillet:['Fish Fillet','Jawbo Fillet'],vegetable:['Sweatcorn','Pikeapple','Spindly Grubfruit'],fuel:['Wood','Peat']};
-export const defaults={normal:12,bottomless:0,hunger:0,wild:false,harvest:true,fertilizer:false,margin:0,...Object.fromEntries(Object.entries(choices).map(([k,v])=>[k,v[0]]))};
+export const choices={grain:['Sleet Wheat Grain','Megafrond Grain'],meat:Object.keys(critters).filter(n=>!['Pacu','Tropical Pacu','Gulp Fish','Blowter','Beakon','Seaquine','Orehull','Rhex','Sanishell','Glo Squid','Jawbo','Spigot Seal','Lumb'].includes(n)),fish:['Pacu','Tropical Pacu','Gulp Fish','Blowter','Beakon','Seaquine'],shellfish:['Sanishell','Orehull'],tough:['Lumb','Rhex'],seafood:['Fish Fillet','Raw Shellfish'],fillet:['Fish Fillet','Jawbo Fillet'],vegetable:['Sweatcorn','Pikeapple','Spindly Grubfruit'],fuel:['Wood','Peat']};
+choices.egg=Object.keys(critters).filter(n=>!critters[n].fixedPeriod);
+export const defaults={normal:12,bottomless:0,hunger:0,wild:false,harvest:true,lumbHarvest:false,fertilizer:false,margin:0,happiness:4,mutation:'None',pollinator:'None',mutationEnabled:true,pollinationEnabled:true,ovagroVines:24,...Object.fromEntries(Object.entries(choices).map(([k,v])=>[k,v[0]]))};

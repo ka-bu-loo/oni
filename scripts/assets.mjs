@@ -1,8 +1,11 @@
 import fs from 'node:fs';
 import {foods,plants,critters,recipes,foraged,asset,wiki,choices} from '../catalog.js';
+import {diets} from '../diets.js';
 const names=new Set([...foods.map(f=>f.name),...Object.keys(plants),...Object.values(plants).map(p=>p.name),...Object.keys(critters),...Object.values(foraged),'Mimillet','Nori','Tublia','Bonbon Tree','Sweetle','Delecta Vole','Regolith','Brine','Sulfur','Snow','Water']);
+for(const name of ['Frosty Planet Logo','Aquatic Planet Logo','Prehistoric Logo','Spaced Out Logo','Liquid Chlorine','Coquina'])names.add(name);
 for(const p of Object.values(plants))for(const [n]of p.inputs)names.add(n);
 for(const c of Object.values(critters))for(const [n]of c.diet)names.add(n.replace('@',''));
+for(const options of Object.values(diets))for(const [name]of options)names.add(name.replace('@',''));
 for(const [name,r] of Object.entries(recipes)){names.add(name);names.add(r.station);for(const [n]of r.inputs)if(!n.startsWith('$'))names.add(n);}
 for(const list of Object.values(choices))for(const n of list)names.add(n);
 const images=new Map(fs.existsSync('asset-manifest.json')?JSON.parse(fs.readFileSync('asset-manifest.json')).filter(x=>x.url).map(x=>[x.name,x.url]):[]);
@@ -17,6 +20,8 @@ for(const file of fs.existsSync('wiki-cache')?fs.readdirSync('wiki-cache'):[]){
  }
 }
 if(images.has('Lumber'))images.set('Wood',images.get('Lumber'));
+if(images.has('Mealwood Seed'))images.set('Seeds',images.get('Mealwood Seed'));
+for(const name of ['Cobalt','Cobalt Ore'])if(images.has(`${name} (Spaced Out)`))images.set(name,images.get(`${name} (Spaced Out)`));
 const valid=file=>fs.existsSync(file)&&fs.readFileSync(file).subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]));
 const list=[...names].sort().map(name=>({name,path:asset(name),page:wiki(name),url:images.get(name)||null,present:valid(asset(name))}));
 if(process.argv.includes('--download'))for(const item of list.filter(x=>!x.present&&x.url)){

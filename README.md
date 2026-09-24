@@ -6,15 +6,17 @@ A lightweight, static food-planning calculator for *Oxygen Not Included*. Select
 
 Use Node 22 or newer, then run `node scripts/serve.mjs` and open http://127.0.0.1:5173. ES modules require an HTTP server; do not double-click index.html.
 
-Tests: `node --test tests/calculator.test.mjs`. Static production build: `node scripts/build.mjs`.
+Tests: `node --test tests/*.test.mjs`. Static production build: `node scripts/build.mjs`.
 
 ## Deploy
 
-The GitHub Actions workflow tests the calculator, copies only public site files and required images into `_site`, and deploys that directory to GitHub Pages. In repository Settings → Pages, choose **GitHub Actions** as the source. A VPS or backend is not required: all calculations run in the browser.
+The GitHub Actions workflow tests the calculator and publishes only public site files and required images. The hub lives at `/oni/`, with this tool at `/oni/food-calculator/`; a future ranch tool can have its own sibling path. In repository Settings → Pages, choose **GitHub Actions** as the source. No backend is needed.
 
 ## Notes
 
 Inspired by the archived ONI Assistant, with a wider black interface and a recursive, connected production tree. All 65 foods from the wiki overview are represented, including Frosty, Prehistoric and Aquatic foods. Selectable alternatives cover grain, meat ranches, cooked seafood, smoked fish, smoked vegetables and smoker fuel.
+
+The Material 3-inspired dark interface includes picture selectors, both tree directions, auto-fit, zoom and panning. Breeders appear once, with surplus harvests on their food output. It includes separate egg and meat sources, species-specific egg yields, diet choices, happiness-dependent reproduction, pollination, Lumb harvesting and ten mutation types. See [community notes](COMMUNITY-NOTES.md) for assumptions and attribution.
 
 See [ASSETS.md](ASSETS.md) for every required image, exact filenames, download links, manual steps and attribution. `node scripts/assets.mjs --download` resumes known missing images with 6.5-second pacing and stops on access/rate-limit errors. `node scripts/assets.mjs` updates the local image inventory without downloading.
 
