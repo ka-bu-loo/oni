@@ -746,6 +746,14 @@ dialog h2 {
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-on-primary-container);
 }
+.mutation-description {
+  display: block;
+  margin-top: 5px;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: inherit;
+}
 .select-trigger {
   font-size: 14px;
   text-align: left;

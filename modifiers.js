@@ -1,7 +1,7 @@
 // Sources: wiki.gg/wiki/Plant, /Pollination, /Critter. Rates remain unrounded.
 export const mutations = {
   None: {},
-  Blooming: { note: '+20 decor.' },
+  Blooming: { note: '+20 decor; no food-production boost.' },
   Easygoing: { upkeep: 0.5, yield: 0.75, note: 'Wider temperature range (+50%).' },
   Juicyfruit: { upkeep: 1.25, instant: true, note: 'Ripe crops drop immediately.' },
   Wildish: { upkeep: 0.1, cycle: 4.5 },
@@ -14,11 +14,30 @@ export const mutations = {
     cycle: 0.25,
     note: 'Requires darkness; harvest carries food-poisoning germs. Rot Pile coproduct not credited.',
   },
-  Leafy: { upkeep: 1.25, cycle: 0.5, note: 'Requires 1,000 lux.' },
-  Bountiful: { upkeep: 1.2, yield: 2, note: 'Requires 200 lux.' },
+  Leafy: {
+    upkeep: 1.25,
+    cycle: 0.5,
+    note: 'Requires 1,000 lux above the plant’s normal light requirement.',
+  },
+  Bountiful: {
+    upkeep: 1.2,
+    yield: 2,
+    note: 'Requires 200 lux above the plant’s normal light requirement.',
+  },
   Specialized: { yield: 1.5, note: 'Temperature range narrowed by 50%.' },
   Superspecialized: { yield: 2, note: 'Temperature range narrowed by 80%.' },
 };
+// Keep the menu's numerical explanations tied to the actual calculation factors.
+export function mutationDescription(name) {
+  if (name === 'None' || !Object.hasOwn(mutations, name))
+    return 'Normal growth, harvest and resource use.';
+  const m = mutations[name];
+  const parts = [];
+  if (m.yield) parts.push(`${Math.round(m.yield * 100)}% harvest yield`);
+  if (m.cycle) parts.push(`${m.cycle}× growth time`);
+  if (m.upkeep) parts.push(`${Math.round(m.upkeep * 100)}% fertilizer / irrigation use`);
+  return [parts.length ? `${parts.join(' · ')}.` : '', m.note || ''].filter(Boolean).join(' ');
+}
 // Explicit allowlists: do not grant modifiers to trees, forage or seedless crops.
 export const mutablePlants = new Set([
   'Mealwood',

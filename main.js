@@ -2,7 +2,7 @@ import { foods, asset, wiki, defaults, choices } from './catalog.js';
 import { calculate, normalizeSettings } from './calculator.js';
 import { availableAssets } from './asset-status.js';
 import { createTreeView } from './tree-view.js';
-import { mutations, pollinators } from './modifiers.js';
+import { mutations, pollinators, mutationDescription } from './modifiers.js';
 import { diets, dietLabel } from './diets.js';
 import { bonusGuide } from './bonus-guide.js';
 const $ = (id) => document.getElementById(id),
@@ -275,7 +275,7 @@ for (const id of ['hunger', 'mutation', 'direction']) {
     $('choice-options').innerHTML = [...select.options]
       .map(
         (o, i) =>
-          `<button type="button" data-option="${i}" aria-pressed="${o.selected}">${esc(o.textContent)}</button>`,
+          `<button type="button" data-option="${i}" aria-pressed="${o.selected}"><span>${esc(o.textContent)}</span>${id === 'mutation' ? `<small class="mutation-description">${esc(mutationDescription(o.value))}</small>` : ''}</button>`,
       )
       .join('');
     $('choice-options').onclick = (e) => {
